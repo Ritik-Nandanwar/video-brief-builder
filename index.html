@@ -73,17 +73,52 @@ aside{position:static}
 .tabs button:hover{border-color:var(--acc)}
 .tabs button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 .tabpanel[hidden]{display:none}
-.vis9 .chip{flex:1 1 150px;max-width:180px}
-.vis9 .chip .box{height:100%}
-.vis9 .chip .h{max-width:none}
-.thumb9{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:6px;margin-bottom:8px;background:#000}
+/* style picker: detail panel + a 9:16 section and a 16:9 section, 3 tiles per row; details on hover */
+.sbpick{clear:both}
+.sect{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tile{position:relative;display:block;aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:#070A14;cursor:pointer;max-width:100%}
+.tiles.tall .tile{aspect-ratio:9/16}
+.tile video,.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.tile input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.tile .tag{position:absolute;top:7px;left:7px;font-size:10.5px;font-weight:800;letter-spacing:.05em;background:rgba(8,11,21,.72);color:#fff;border-radius:4px;padding:1px 6px}
+.tile .ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:10px;color:#fff;opacity:0;transition:opacity .16s;background:linear-gradient(to top,rgba(8,11,21,.92) 0%,rgba(8,11,21,.6) 55%,rgba(8,11,21,0) 100%)}
+.tile:hover .ov,.tile:focus-within .ov{opacity:1}
+.tile:focus-within{box-shadow:0 0 0 3px var(--stripe)}
+.ov .f{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#F2C14E;font-weight:700}
+.ov .n{font-weight:800;font-size:15px;line-height:1.15;text-wrap:balance}
+.ov .g{font-size:12.5px;line-height:1.3;color:#D9DEEE}
+.ov .tg{font:11.5px ui-monospace,Menlo,Consolas,monospace;color:#B9C3E6}
+.ov .play{align-self:flex-start;margin-top:6px;min-height:30px;padding:0 10px;font-size:12px;color:#fff;border-color:rgba(255,255,255,.7)}
+.tile:has(input:checked){box-shadow:0 0 0 3px var(--acc)}
+.tile:has(input:checked)::after{content:"\2713";position:absolute;top:7px;right:7px;width:24px;height:24px;border-radius:50%;background:var(--acc);color:var(--acc-ink);font-weight:800;font-size:14px;display:grid;place-items:center}
+.tile.ch{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:14px;background:var(--bg);border:1.5px dashed var(--line);color:var(--ink)}
+.tile.ch b{font-size:15px}.tile.ch small{color:var(--mute);font-size:13px}
+.tile[hidden]{display:none}
+.picked{display:flex;gap:12px;align-items:center;border:1.5px solid var(--acc);border-radius:10px;padding:10px 12px;margin-bottom:4px}
+.picked.hov{border-style:dashed}
+.picked .th{position:relative;width:96px;aspect-ratio:16/9;border-radius:6px;overflow:hidden;flex:none;background:#070A14}
+.picked .th.tall{width:54px;aspect-ratio:9/16}
+.picked .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.picked .tx{min-width:0;flex:1}
+.picked .lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--acc)}
+.picked b{display:block}
+.picked small{display:block;color:var(--mute);font-size:13px}
+.picked code{font:12px ui-monospace,Menlo,Consolas,monospace;color:var(--mute)}
+.picked .play{margin-top:0;flex:none}
+.chip .box.arw{display:flex;align-items:center;gap:10px}
+.arw i{display:block;border:2px solid currentColor;border-radius:3px;flex:none}
+@media (max-width:640px){.tiles.wide{grid-template-columns:repeat(2,minmax(0,1fr))}.ov .g{display:none}.picked .play{display:none}}
+@media (hover:none){.tile .ov{display:none}}
 .trig{display:inline-block;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:2px 6px;border-radius:6px;background:var(--bg);color:var(--mute);margin-top:4px}
 .chip input:checked+.box .trig{background:rgba(255,255,255,.18);color:inherit}
 .note{clear:both;margin:8px 0 0;color:var(--mute);font-size:13px}
 .fams{clear:both;display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.fams .play{margin-top:0}.vis9 label.chip[hidden]{display:none}
 .thumb9.soon{display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:13px;font-weight:600;color:var(--mute);background:var(--bg);border:1.5px dashed var(--line)}
-#dlg2 video{display:block;width:min(100%,420px);aspect-ratio:9/16;margin:0 auto;border-radius:8px;background:#000}
-#dlg2{width:min(96vw,480px)}
+#dlg2 video{display:block;width:100%;aspect-ratio:9/16;margin:0 auto;border-radius:8px;background:#000;max-height:78vh;object-fit:contain}
+#dlg2{width:min(96vw,460px)}
+#dlg2.wide{width:min(96vw,900px)}
+#dlg2.wide video{aspect-ratio:16/9}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -109,7 +144,7 @@ aside{position:static}
 <div class="wrap">
 <header>
 <h1>Skill Box brief</h1>
-<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of 74 animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays a short preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
+<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of 74 animated mediums: Hindi voice, Hinglish karaoke captions, any aspect ratio. Pick a style (each card plays a short preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
 </header>
 <form id="f2" onsubmit="return false"></form>
 <aside>
@@ -318,10 +353,13 @@ var SBS = [
  ['mac1bit','1-Bit 1984 Paint Screen','Computer history, pixels and dithering','Reference preview (16:9 inside the reel)','Retro Digital']
 ];
 var CH = 'Claude chooses from the topic';
-var HASCLIP = { watercolor: 1, puppet: 1, cosmic: 1, whiteboard: 1, neon: 1, papercraft: 1, noir: 1, manim: 1, collage: 1, deepsea: 1, comic: 1, isometric: 1, scope: 1, clay: 1, neonsign: 1, kawaii: 1, ukiyoe: 1, pixel16: 1, chalk: 1, cutpaper: 1, glass: 1, chart: 1, synthwave: 1, origami: 1, linocut: 1, holo: 1, voxel: 1, sumie: 1, etch: 1, starchart: 1, thermal: 1, zine: 1, impasto: 1, blueprint: 1, lowpoly: 1, win95: 1, letterpress: 1, manga: 1, felt: 1, lightpaint: 1, glassui: 1, terminal: 1, metro: 1, tarot: 1, napkin: 1, gouache: 1, xray: 1, vaporwave: 1, isotype: 1, soft3d: 1, agitprop: 1, stitch: 1, botanical: 1, pocket: 1, mosaic: 1, kinetic: 1, sticky: 1, chrome: 1, wireframe: 1, newsprint: 1, ballpoint: 1, memphis: 1, topo: 1, arcade: 1, pointillist: 1, bauhaus: 1, patent: 1, string: 1, paint: 1, graphite: 1, swiss: 1, flow: 1, truchet: 1, mac1bit: 1 };   // add an id here when sb/<id>.mp4 + .jpg are uploaded
+var PORT = {};   // every preview is 16:9 now; add an id here to show a 9:16 clip from sb/ in its own section
+var CLIP = function(id, ext){ return (PORT[id] ? 'sb/' : 'sb16/') + id + '.' + ext; };
+var AR = { '9:16 vertical (Reels, Shorts)': [12, 21, '1080x1920'], '16:9 landscape (YouTube)': [28, 16, '1920x1080'], '1:1 square (feed posts)': [20, 20, '1080x1080'], '4:5 portrait (Instagram feed)': [18, 22, '1080x1350'] };
 var Q = [
  {id:'topic',k:'Topic',t:'Topic',type:'text',ph:'e.g. How UPI payments work, or Krishna lifts Govardhan',help:'Any subject: tech, science, history, nature or mythology. Leave it empty and Claude will suggest 3 topics that suit the style.'},
- {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops a short preview (4–8 seconds). “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts. Cosmic, Whiteboard, Neon and Papercraft are portrait previews drawn with each style’s own medium code. The other 68 show a loop of their original reference animation (16:9, framed inside the reel). Use the family chips to narrow the list. Every style’s portrait kit gets built the first time you use it.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3],s[4]];}).concat([[CH,CH,'Best medium for the topic','']])},
+ {id:'ar',k:'Aspect ratio',t:'Aspect ratio',type:'one',def:'9:16 vertical (Reels, Shorts)',o:Object.keys(AR).map(function(k){ return [k]; })},
+ {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Hover a preview to see its details, click to choose it. Filter by family to narrow the list.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3],s[4]];}).concat([[CH,CH,'Best medium for the topic','']])},
  {id:'len',k:'Length',t:'Length',type:'one',def:'About 60 seconds',o:[['About 45 seconds'],['About 60 seconds'],['About 70 seconds']]},
  {id:'kind',k:'Topic type',t:'Topic type',type:'one',def:'Claude works it out from the topic',help:'Sets how facts are sourced and which music fits.',o:[['Claude works it out from the topic'],['Technology or science explainer (current, sourced facts)'],['History or true story'],['Nature or health'],['Mythology: the version audiences know, with source tags'],['Mythology: strictly the original text (Valmiki / Vyasa)'],['Any topic with a mythology hook']]},
  {id:'voice',k:'Voice',t:'Hindi voice (Kokoro)',type:'one',def:'hm_omega (Hindi male, storyteller), speed 0.92',o:[['hm_omega (Hindi male, storyteller), speed 0.92'],['hm_psi (Hindi male, lighter)'],['hf_alpha (Hindi female, warm)'],['hf_beta (Hindi female, bright)']]},
@@ -329,7 +367,7 @@ var Q = [
  {id:'mood',k:'Music bed',t:'Music bed',type:'one',def:'Claude picks from the topic',o:[['Claude picks from the topic'],['Tech (synth pad and pulse)'],['Calm (soft pad)'],['Tanpura: epic'],['Tanpura: grief'],['Tanpura: night']]},
  {id:'end',k:'Ending',t:'Ending',type:'one',def:'One-line takeaway (moral)',o:[['One-line takeaway (moral)'],['Loop back to the hook'],['Custom end line or handle']]},
  {id:'endtxt',k:'Custom end line or handle',t:'Your end line or handle',type:'text',ph:'e.g. Follow @thevitharstudio',show:function(s){return s.end==='Custom end line or handle'}},
- {id:'deliv',k:'Deliver',t:'What you want back',type:'many',def:['MP4 video (1080x1920)','Thumbnail (renders/thumbnail.jpg)','Title, description and hashtags'],o:[['MP4 video (1080x1920)'],['Thumbnail (renders/thumbnail.jpg)'],['Title, description and hashtags'],['One-file player (HTML)'],['Script with each line’s timing'],['research.md with sources']]},
+ {id:'deliv',k:'Deliver',t:'What you want back',type:'many',def:['MP4 video','Thumbnail (renders/thumbnail.jpg)','Title, description and hashtags'],o:[['MP4 video'],['Thumbnail (renders/thumbnail.jpg)'],['Title, description and hashtags'],['One-file player (HTML)'],['Script with each line’s timing'],['research.md with sources']]},
  {id:'notes',k:'Extra notes',t:'Extra notes',type:'area',ph:'Must-include facts or stats, names, things to avoid, a line to quote…',help:'Optional.'},
  {id:'flow',k:'Workflow',t:'Workflow',type:'one',def:'Just go: research, render, check the contact sheet, deliver',o:[['Just go: research, render, check the contact sheet, deliver'],['Show me the script and contact sheet first, then wait for my approval']]}
 ];
@@ -338,8 +376,7 @@ var NAME = {}; SBS.forEach(function(s){ NAME[s[0]] = s[1]; });
 function init2(){ Q.forEach(function(s){ st2[s.id] = s.type==='many' ? s.def.slice() : (s.def || ''); }); }
 function el(tag, cls, txt){ var e = document.createElement(tag); if(cls) e.className = cls; if(txt != null) e.textContent = txt; return e; }
 var dlg2 = document.getElementById('dlg2'), big2 = document.getElementById('big2');
-function openStill(id){ document.getElementById('dlg2t').textContent = NAME[id]; big2.removeAttribute('src'); big2.load(); big2.poster = 'sb/' + id + '.jpg'; dlg2.showModal(); }
-function openClip(id){ document.getElementById('dlg2t').textContent = NAME[id]; big2.src = 'sb/' + id + '.mp4'; big2.poster = 'sb/' + id + '.jpg'; dlg2.showModal(); big2.play().catch(function(){}); }
+function openClip(id){ document.getElementById('dlg2t').textContent = NAME[id]; dlg2.classList.toggle('wide', !PORT[id]); big2.poster = CLIP(id, 'jpg'); big2.src = CLIP(id, 'mp4'); dlg2.showModal(); var p = big2.play(); if(p) p.catch(function(){}); }
 document.getElementById('dlg2x').addEventListener('click', function(){ dlg2.close(); });
 dlg2.addEventListener('click', function(e){ if(e.target === dlg2) dlg2.close(); });
 dlg2.addEventListener('close', function(){ big2.pause(); });
@@ -349,6 +386,7 @@ function build2(){
     if(s.id==='style') fs.className = 'vis9';
     fs.appendChild(el('legend', '', s.t));
     if(s.help) fs.appendChild(el('p', 'help', s.help));
+    if(s.id==='style'){ buildStyle(s, fs); form2.appendChild(fs); return; }
     if(s.type==='text' || s.type==='area'){
       var inp = el(s.type==='text' ? 'input' : 'textarea'); if(s.type==='text') inp.type = 'text';
       inp.placeholder = s.ph || ''; inp.setAttribute('aria-label', s.t);
@@ -360,11 +398,12 @@ function build2(){
         var lab = el('label', 'chip'), inp = el('input'), face = el('span', 'box');
         inp.type = s.type==='one' ? 'radio' : 'checkbox'; inp.name = 'sb_' + s.id; inp.value = o[0];
         var isDef = s.type==='one' ? o[0]===s.def : s.def.indexOf(o[0]) > -1; inp.checked = isDef;
-        var isClip = s.id==='style' && NAME[o[0]] && HASCLIP[o[0]], isSoon = s.id==='style' && NAME[o[0]] && !HASCLIP[o[0]];
+        var isClip = false, isSoon = false;   // the style field has its own builder (buildStyle)
         if(s.id==='style') lab.dataset.fam = o[4] || '';
         if(isSoon){ var im = el('img', 'thumb9'); im.loading = 'lazy'; im.decoding = 'async'; im.src = 'sb/' + o[0] + '.jpg'; im.alt = o[1] + ' still frame'; face.appendChild(im); }
         if(isClip){ var v = el('video', 'thumb9'); v.muted = true; v.loop = true; v.setAttribute('playsinline',''); v.setAttribute('muted',''); v.preload = 'none'; v.poster = 'sb/' + o[0] + '.jpg'; v.src = 'sb/' + o[0] + '.mp4'; v.setAttribute('aria-label', o[1] + ' preview clip'); face.appendChild(v); }
         var label = s.id==='style' ? o[1] : o[0];
+        if(s.id==='ar'){ face.className = 'box arw'; var ic = el('i'); ic.style.width = AR[o[0]][0] + 'px'; ic.style.height = AR[o[0]][1] + 'px'; face.appendChild(ic); }
         face.appendChild(el('span', 't', label + (isDef ? ' ★' : '')));
         if(s.id==='style' && o[2]) face.appendChild(el('span', 'h', o[2]));
         if(isSoon){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb2 = el('button', 'play', 'Enlarge'); eb2.type = 'button'; eb2.setAttribute('aria-label', 'Show the ' + o[1] + ' still large'); eb2.addEventListener('click', function(e){ e.preventDefault(); openStill(o[0]); }); face.appendChild(eb2); }
@@ -396,6 +435,53 @@ function build2(){
     window._sbIO = io;
   }
 }
+function detail(id, hovering){
+  var p = document.getElementById('sbpicked'); if(!p) return; p.textContent = '';
+  var o = null; Q[2].o.forEach(function(x){ if(x[0] === id) o = x; }); if(!o) return;
+  var prev = hovering && id !== st2.style; p.classList.toggle('hov', prev);
+  if(NAME[id]){ var th = el('div', 'th' + (PORT[id] ? ' tall' : '')), im = el('img'); im.src = CLIP(id, 'jpg'); im.alt = ''; th.appendChild(im); p.appendChild(th); }
+  var tx = el('div', 'tx'); tx.appendChild(el('span', 'lbl', prev ? 'Previewing' : 'Selected'));
+  tx.appendChild(el('b', '', o[1] + (o[0] === Q[2].def ? ' ★' : ''))); tx.appendChild(el('small', '', (o[4] ? o[4] + ' · ' : '') + o[2]));
+  if(NAME[id]) tx.appendChild(el('code', '', 'box-' + id));
+  p.appendChild(tx);
+  if(NAME[id]){ var b = el('button', 'play', 'Enlarge'); b.type = 'button'; b.addEventListener('click', function(){ openClip(id); }); p.appendChild(b); }
+}
+function buildStyle(s, fs){
+  s.els = [];
+  var fams = ['All']; s.o.forEach(function(o){ if(o[4] && fams.indexOf(o[4]) < 0) fams.push(o[4]); });
+  var bar = el('div', 'fams'); bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Filter styles by family');
+  var wrap = el('div', 'sbpick'), panel = el('div', 'picked'); panel.id = 'sbpicked'; panel.setAttribute('aria-live', 'polite');
+  var h9 = el('div', 'sect', 'Native 9:16 previews'), g9 = el('div', 'tiles tall'), h16 = el('div', 'sect', '16:9 previews'), g16 = el('div', 'tiles wide');
+  s.o.forEach(function(o){
+    var id = o[0], isStyle = !!NAME[id], lab = el('label', 'tile' + (isStyle ? '' : ' ch')), inp = el('input');
+    inp.type = 'radio'; inp.name = 'sb_style'; inp.value = id; inp.checked = id === s.def; inp.setAttribute('aria-label', o[1]);
+    lab.dataset.fam = o[4] || ''; lab.appendChild(inp);
+    if(isStyle){
+      var v = el('video'); v.muted = true; v.loop = true; v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.preload = 'none';
+      v.poster = CLIP(id, 'jpg'); v.src = CLIP(id, 'mp4'); v.setAttribute('aria-hidden', 'true'); lab.appendChild(v);
+      if(PORT[id]) lab.appendChild(el('span', 'tag', '9:16'));
+      var ov = el('span', 'ov'); ov.appendChild(el('span', 'f', o[4])); ov.appendChild(el('span', 'n', o[1] + (id === s.def ? ' ★' : ''))); ov.appendChild(el('span', 'tg', 'box-' + id));
+      var eb = el('button', 'play', 'Enlarge'); eb.type = 'button'; eb.setAttribute('aria-label', 'Play the ' + o[1] + ' preview large');
+      eb.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); openClip(id); }); ov.appendChild(eb); lab.appendChild(ov);
+    } else { lab.appendChild(el('b', '', o[1])); lab.appendChild(el('small', '', o[2])); }
+    lab.addEventListener('mouseenter', function(){ detail(id, true); }); lab.addEventListener('mouseleave', function(){ detail(st2.style, false); });
+    inp.addEventListener('focus', function(){ detail(id, true); }); inp.addEventListener('blur', function(){ detail(st2.style, false); });
+    inp.addEventListener('change', function(){ st2.style = id; upd2(); detail(id, false); });
+    s.els.push(inp); (PORT[id] ? g9 : g16).appendChild(lab);
+  });
+  function filter(f){
+    [g9, g16].forEach(function(g){ var n = 0; g.querySelectorAll('label.tile').forEach(function(l){ var show = f === 'All' || l.dataset.fam === f || l.dataset.fam === '' || l.querySelector('input').checked; l.hidden = !show; if(show) n++; });
+      (g === g9 ? h9 : h16).hidden = g.hidden = n === 0; });
+    if(g9.hidden) h16.hidden = true;
+  }
+  fams.forEach(function(f, i){ var b = el('button', 'play', f); b.type = 'button'; b.setAttribute('aria-pressed', i ? 'false' : 'true');
+    b.addEventListener('click', function(){ bar.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); filter(f); });
+    bar.appendChild(b); });
+  wrap.appendChild(panel); wrap.appendChild(h9); wrap.appendChild(g9); wrap.appendChild(h16); wrap.appendChild(g16);
+  fs.appendChild(bar); fs.appendChild(wrap);
+  filter('All');
+  if(!g9.hidden) h16.textContent = '16:9 previews'; else h16.hidden = true;
+}
 function brief2(){
   var topic = st2.topic || '', sty = st2.style;
   var first = sty===CH ? 'skill-box ' + (topic || '(suggest 3 topics)') + ' (pick the best style for it)' : 'box-' + sty + ' ' + (topic || '(suggest 3 topics that suit this style)');
@@ -405,14 +491,17 @@ function brief2(){
     if(s.show && !s.show(st2)) return;
     var v = st2[s.id]; if(Array.isArray(v)) v = v.join(', ');
     if(s.id==='style') v = sty===CH ? CH : NAME[sty] + ' (box-' + sty + ')';
+    if(s.id==='ar') v = v + ', ' + AR[v][2];
+    if(s.id==='deliv') v = v.replace('MP4 video', 'MP4 video (' + AR[st2.ar][2] + ')').replace('Thumbnail (renders/thumbnail.jpg)', 'Thumbnail (' + AR[st2.ar][2] + ', renders/thumbnail.jpg)');
     if(v) L.push(s.k + ': ' + v);
   });
-  L.push('Format: vertical 9:16, Hindi voice');
+  if(st2.ar.indexOf('9:16') !== 0) L.push('Layout: rebuild the style\'s compositions for ' + st2.ar.split(' ')[0] + ' (skill-box kits are portrait-first)');
+  L.push('Language: Hindi voice');
   return L.join('\n');
 }
 function upd2(){ Q.forEach(function(s){ if(s.show) sets2[s.id].hidden = !s.show(st2); }); out2.textContent = brief2(); }
-function reset2(){ init2(); Q.forEach(function(s){ if(s.el) s.el.value = ''; if(s.els) s.els.forEach(function(inp, i){ var v = s.o[i][0]; inp.checked = s.type==='one' ? v===s.def : s.def.indexOf(v) > -1; }); }); upd2(); }
-init2(); build2(); upd2();
+function reset2(){ init2(); Q.forEach(function(s){ if(s.el) s.el.value = ''; if(s.els) s.els.forEach(function(inp, i){ var v = s.o[i][0]; inp.checked = s.type==='one' ? v===s.def : s.def.indexOf(v) > -1; }); }); upd2(); detail(st2.style, false); }
+init2(); build2(); upd2(); detail(st2.style, false);
 // tabs: the Copy / Reset buttons (and the phone bar) act on the open tab
 var cur = 'fs', fsBrief = brief, fsReset = reset;
 brief = function(){ return cur==='sb' ? brief2() : fsBrief(); };
