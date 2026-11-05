@@ -353,7 +353,7 @@ var SBS = [
  ['mac1bit','1-Bit 1984 Paint Screen','Computer history, pixels and dithering','Reference preview (16:9 inside the reel)','Retro Digital']
 ];
 var CH = 'Claude chooses from the topic';
-var PORT = {};   // every preview is 16:9 now; add an id here to show a 9:16 clip from sb/ in its own section
+var PORT = {};   // every preview is 16:9 (sb16/); an id here would load a 9:16 clip from sb/ in its own section
 var CLIP = function(id, ext){ return (PORT[id] ? 'sb/' : 'sb16/') + id + '.' + ext; };
 var AR = { '9:16 vertical (Reels, Shorts)': [12, 21, '1080x1920'], '16:9 landscape (YouTube)': [28, 16, '1920x1080'], '1:1 square (feed posts)': [20, 20, '1080x1080'], '4:5 portrait (Instagram feed)': [18, 22, '1080x1350'] };
 var Q = [
@@ -398,16 +398,11 @@ function build2(){
         var lab = el('label', 'chip'), inp = el('input'), face = el('span', 'box');
         inp.type = s.type==='one' ? 'radio' : 'checkbox'; inp.name = 'sb_' + s.id; inp.value = o[0];
         var isDef = s.type==='one' ? o[0]===s.def : s.def.indexOf(o[0]) > -1; inp.checked = isDef;
-        var isClip = false, isSoon = false;   // the style field has its own builder (buildStyle)
         if(s.id==='style') lab.dataset.fam = o[4] || '';
-        if(isSoon){ var im = el('img', 'thumb9'); im.loading = 'lazy'; im.decoding = 'async'; im.src = 'sb/' + o[0] + '.jpg'; im.alt = o[1] + ' still frame'; face.appendChild(im); }
-        if(isClip){ var v = el('video', 'thumb9'); v.muted = true; v.loop = true; v.setAttribute('playsinline',''); v.setAttribute('muted',''); v.preload = 'none'; v.poster = 'sb/' + o[0] + '.jpg'; v.src = 'sb/' + o[0] + '.mp4'; v.setAttribute('aria-label', o[1] + ' preview clip'); face.appendChild(v); }
         var label = s.id==='style' ? o[1] : o[0];
         if(s.id==='ar'){ face.className = 'box arw'; var ic = el('i'); ic.style.width = AR[o[0]][0] + 'px'; ic.style.height = AR[o[0]][1] + 'px'; face.appendChild(ic); }
         face.appendChild(el('span', 't', label + (isDef ? ' ★' : '')));
         if(s.id==='style' && o[2]) face.appendChild(el('span', 'h', o[2]));
-        if(isSoon){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb2 = el('button', 'play', 'Enlarge'); eb2.type = 'button'; eb2.setAttribute('aria-label', 'Show the ' + o[1] + ' still large'); eb2.addEventListener('click', function(e){ e.preventDefault(); openStill(o[0]); }); face.appendChild(eb2); }
-        if(isClip){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb = el('button', 'play', 'Enlarge'); eb.type = 'button'; eb.setAttribute('aria-label', 'Play the ' + o[1] + ' preview large'); eb.addEventListener('click', function(e){ e.preventDefault(); openClip(o[0]); }); face.appendChild(eb); }
         inp.addEventListener('change', function(){
           if(s.type==='one') st2[s.id] = o[0]; else st2[s.id] = s.o.map(function(x, i){ return s.els[i].checked ? x[0] : null; }).filter(Boolean);
           upd2();
