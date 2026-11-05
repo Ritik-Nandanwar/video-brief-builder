@@ -80,6 +80,7 @@ aside{position:static}
 .trig{display:inline-block;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:2px 6px;border-radius:6px;background:var(--bg);color:var(--mute);margin-top:4px}
 .chip input:checked+.box .trig{background:rgba(255,255,255,.18);color:inherit}
 .note{clear:both;margin:8px 0 0;color:var(--mute);font-size:13px}
+.fams{clear:both;display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.fams .play{margin-top:0}.vis9 label.chip[hidden]{display:none}
 .thumb9.soon{display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:13px;font-weight:600;color:var(--mute);background:var(--bg);border:1.5px dashed var(--line)}
 #dlg2 video{display:block;width:min(100%,420px);aspect-ratio:9/16;margin:0 auto;border-radius:8px;background:#000}
 #dlg2{width:min(96vw,480px)}
@@ -108,7 +109,7 @@ aside{position:static}
 <div class="wrap">
 <header>
 <h1>Skill Box brief</h1>
-<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of sixteen animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
+<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of 74 animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
 </header>
 <form id="f2" onsubmit="return false"></form>
 <aside>
@@ -241,28 +242,86 @@ init(); build(); update();
 <script>
 (function(){
 var SBS = [
- ['watercolor','Watercolor Sketchbook Story Pages','Nature, biology, health, gentle stories (Ganga, Vrindavan)','Rani Makkhi (real video)'],
- ['puppet','Shadow Puppet Theatre','History, true stories, dramatic origin tales, epics','Ravan Vadh (real video)'],
- ['cosmic','Cosmic Cartoon Planet Tales','Space, satellites, GPS, physics, cosmic myths','Preview: Dhruva Tara'],
- ['whiteboard','Whiteboard Marker Story Lesson','Algorithms, system design, processes, timelines','Preview: Chakravyuh'],
- ['neon','Neon Glow Tech Story','AI, apps, payments, networks, chips, data flows','Preview: Divyastra'],
- ['papercraft','Papercraft Model Kit Mat','How things are built: phones, bridges, Ram Setu','Preview: Ram Setu'],
- ['noir','Film Noir Newsreel Case','Data breaches, scams, hacker hunts, whodunits','Reference preview (16:9 inside the reel)'],
- ['manim','Manim Math Proof Lesson','Algorithms, maths, probability, how models learn','Reference preview (16:9 inside the reel)'],
- ['collage','Editorial Collage Essay Pages','Company and invention histories, essays on tech','Reference preview (16:9 inside the reel)'],
- ['deepsea','Bioluminescent Deep Sea Tales','Networks, signals, fibre optics, ocean science','Reference preview (16:9 inside the reel)'],
- ['comic','Halftone Pop Comic Panels','Gadget launches, cyber-attacks, startup stories','Reference preview (16:9 inside the reel)'],
- ['isometric','Isometric Pastel Mini World','Data centres, factories, the cloud, logistics','Reference preview (16:9 inside the reel)'],
- ['scope','Oscilloscope Beam Vector Story','Signals, radio, Wi-Fi and 5G waves, electronics','Reference preview (16:9 inside the reel)'],
- ['clay','Claymation Stop-Motion Set','How gadgets are made, kids science, recycling','Reference preview (16:9 inside the reel)'],
- ['neonsign','Neon Sign Night Street','City tech, payments, top-5 lists, app features','Reference preview (16:9 inside the reel)'],
- ['kawaii','Kawaii Anime Chibi Story','Cute app and AI explainers, internet safety','Reference preview (16:9 inside the reel)']
+ ['watercolor','Watercolor Sketchbook Story Pages','Nature, biology, health, gentle stories (Ganga, Vrindavan)','Rani Makkhi (real video)','Painterly'],
+ ['puppet','Shadow Puppet Theatre','History, true stories, dramatic origin tales, epics','Ravan Vadh (real video)','Paper & Craft'],
+ ['cosmic','Cosmic Cartoon Planet Tales','Space, satellites, GPS, physics, cosmic myths','Preview: Dhruva Tara','Popular Explainer Looks'],
+ ['whiteboard','Whiteboard Marker Story Lesson','Algorithms, system design, processes, timelines','Preview: Chakravyuh','Hand-Drawn'],
+ ['neon','Neon Glow Tech Story','AI, apps, payments, networks, chips, data flows','Preview: Divyastra','Popular Explainer Looks'],
+ ['papercraft','Papercraft Model Kit Mat','How things are built: phones, bridges, Ram Setu','Preview: Ram Setu','Paper & Craft'],
+ ['noir','Film Noir Newsreel Case','Data breaches, scams, hacker hunts, whodunits','Reference preview (16:9 inside the reel)','Light & Imaging'],
+ ['manim','Manim Math Proof Lesson','Algorithms, maths, probability, how models learn','Reference preview (16:9 inside the reel)','Popular Explainer Looks'],
+ ['collage','Editorial Collage Essay Pages','Company and invention histories, essays on tech','Reference preview (16:9 inside the reel)','Popular Explainer Looks'],
+ ['deepsea','Bioluminescent Deep Sea Tales','Networks, signals, fibre optics, ocean science','Reference preview (16:9 inside the reel)','Light & Imaging'],
+ ['comic','Halftone Pop Comic Panels','Gadget launches, cyber-attacks, startup stories','Reference preview (16:9 inside the reel)','Print'],
+ ['isometric','Isometric Pastel Mini World','Data centres, factories, the cloud, logistics','Reference preview (16:9 inside the reel)','Dimensional'],
+ ['scope','Oscilloscope Beam Vector Story','Signals, radio, Wi-Fi and 5G waves, electronics','Reference preview (16:9 inside the reel)','Retro Digital'],
+ ['clay','Claymation Stop-Motion Set','How gadgets are made, kids science, recycling','Reference preview (16:9 inside the reel)','Paper & Craft'],
+ ['neonsign','Neon Sign Night Street','City tech, payments, top-5 lists, app features','Reference preview (16:9 inside the reel)','Light & Imaging'],
+ ['kawaii','Kawaii Anime Chibi Story','Cute app and AI explainers, internet safety','Reference preview (16:9 inside the reel)','Popular Explainer Looks'],
+ ['ukiyoe','Ukiyo-e Woodblock Wave Prints','Ocean data, shipping and trade routes','Still frame (clip coming soon)','Art & Design Movements'],
+ ['pixel16','16-Bit Pixel Quest Cutscenes','Gaming history, how games are made','Still frame (clip coming soon)','Retro Digital'],
+ ['chalk','Chalkboard Classroom Story Lesson','Formulas, physics and maths lessons, exam topics','Still frame (clip coming soon)','Hand-Drawn'],
+ ['cutpaper','Cut-Paper Shadow-Box Diorama','Layers of the internet, how a city or forest works','Still frame (clip coming soon)','Paper & Craft'],
+ ['glass','Cathedral Stained Glass Windows','History of science and invention','Still frame (clip coming soon)','Painterly'],
+ ['chart','Newspaper Data Chart Story','Market and economy stats, AI adoption, prices','Still frame (clip coming soon)','Data & Information'],
+ ['synthwave','Synthwave Outrun Neon Drive','Gaming, 80s computing, cars and EVs','Still frame (clip coming soon)','Retro UI & Neon'],
+ ['origami','Origami Studio Folded Models','How things are designed, folding phones','Still frame (clip coming soon)','Paper & Craft'],
+ ['linocut','Linocut Relief Print Story','Labour and industry history','Still frame (clip coming soon)','Print'],
+ ['holo','Holographic Foil Trading Card','Gadget stat cards, rare-tech collectibles','Still frame (clip coming soon)','Light & Imaging'],
+ ['voxel','Voxel Diorama Toy Island','Minecraft-like explainers, smart cities, farms','Still frame (clip coming soon)','Dimensional'],
+ ['sumie','Sumi-e Ink Wash Scrolls','Calm science, mindfulness tech, nature and climate','Still frame (clip coming soon)','Painterly'],
+ ['etch','Etch A Sketch Line Toy','How plotters and CNC draw, one-line diagrams','Still frame (clip coming soon)','Hand-Drawn'],
+ ['starchart','Cosmic Star Chart Atlas','Astronomy, space missions, satellites','Still frame (clip coming soon)','Cosmic & Psychedelic'],
+ ['thermal','Thermal Camera Heat Vision','Heat in data centres, phone overheating, energy loss','Still frame (clip coming soon)','Light & Imaging'],
+ ['zine','Punk Zine Cut-and-Paste','Privacy and hacker culture, internet rebellion','Still frame (clip coming soon)','Paper & Craft'],
+ ['impasto','Impasto Starry Night Oils','Space and night-sky science, emotions and AI art','Still frame (clip coming soon)','Painterly'],
+ ['blueprint','Engineering Blueprint Drafting Sheet','How machines, engines','Still frame (clip coming soon)','Hand-Drawn'],
+ ['lowpoly','Low-Poly Faceted 3D World','Rockets, mountains and terrain, games','Still frame (clip coming soon)','Dimensional'],
+ ['win95','Win95 Desktop Error Story','Computer history, bugs and crashes, old internet','Still frame (clip coming soon)','Retro UI & Neon'],
+ ['letterpress','Wood Type Letterpress Broadside','Big announcements, launches, quotes, top facts','Still frame (clip coming soon)','Print'],
+ ['manga','Manga Page Action Panels','Robot and AI stories, gaming, startup drama','Still frame (clip coming soon)','Illustration'],
+ ['felt','Felt Patchwork Quilt Story','Networks as stitched buttons, kids tech','Still frame (clip coming soon)','Paper & Craft'],
+ ['lightpaint','Light Painting Long Exposure','Neural networks, light and optics, fibre','Still frame (clip coming soon)','Light & Imaging'],
+ ['glassui','Glassmorphism Frosted UI Story','Apps and UI, phone features, fintech dashboards','Still frame (clip coming soon)','Dimensional'],
+ ['terminal','Phosphor Terminal Green Screen','Hacking and cybersecurity, coding, Linux','Still frame (clip coming soon)','Retro Digital'],
+ ['metro','Metro Map Data Line','Pipelines, how data flows, supply chains','Still frame (clip coming soon)','Data & Information'],
+ ['tarot','Tarot Card Art Nouveau','Predictions and forecasts, AI and the future','Still frame (clip coming soon)','Illustration'],
+ ['napkin','Napkin Sketch Startup Pitch','Startup ideas, business models','Still frame (clip coming soon)','Hand-Drawn'],
+ ['gouache','Gouache Travel Poster Scenes','Travel tech, cities and places','Still frame (clip coming soon)','Painterly'],
+ ['xray','Radiograph Lightbox X-Ray Film','Inside gadgets and robots, how the body works','Still frame (clip coming soon)','Light & Imaging'],
+ ['vaporwave','Vaporwave Mall Dreamscape','Internet culture, retro computing, music tech','Still frame (clip coming soon)','Retro UI & Neon'],
+ ['isotype','ISOTYPE Pictogram Statistics','Population, users, jobs, energy','Still frame (clip coming soon)','Data & Information'],
+ ['soft3d','Soft 3D Puffy Clay Icons','App features, product explainers, social media','Still frame (clip coming soon)','Dimensional'],
+ ['agitprop','Constructivist Agitprop Poster','Tech revolutions, AI and labour, calls to action','Still frame (clip coming soon)','Art & Design Movements'],
+ ['stitch','Cross-Stitch Sampler Hoop','Pixel art and screens, how images are made of pixels','Still frame (clip coming soon)','Paper & Craft'],
+ ['botanical','Botanical Copperplate Plate','Plants and biology, food science, biotech','Still frame (clip coming soon)','Illustration'],
+ ['pocket','Pocket Monochrome Handheld','Gaming history, retro hardware, simple how-it-works','Still frame (clip coming soon)','Retro Digital'],
+ ['mosaic','Byzantine Gold Mosaic Walls','Pixels and images, history of empires and trade','Still frame (clip coming soon)','Illustration'],
+ ['kinetic','Kinetic Type Music Video','Quotes, big claims, top-5 lists','Still frame (clip coming soon)','Generative & Type'],
+ ['sticky','Sticky-Note Brainstorm Wall','Brainstorms, product planning','Still frame (clip coming soon)','Illustration'],
+ ['chrome','Y2K Liquid Chrome Bubbles','Internet culture, Y2K, music players','Still frame (clip coming soon)','Retro UI & Neon'],
+ ['wireframe','Hidden-Line Wireframe Terrain','Loss landscapes and AI, terrain and maps','Still frame (clip coming soon)','Dimensional'],
+ ['newsprint','Vintage Newsprint Front Page','Tech news, historic launches, breaking stories','Still frame (clip coming soon)','Print'],
+ ['ballpoint','Ballpoint Notebook Doodles','Study notes, exam tips, coding basics','Still frame (clip coming soon)','Hand-Drawn'],
+ ['memphis','Memphis Group Pop Shapes','Fun facts, app features, social trends','Still frame (clip coming soon)','Art & Design Movements'],
+ ['topo','Topographic Survey Map','Gradient descent and AI training, maps and GPS','Still frame (clip coming soon)','Data & Information'],
+ ['arcade','Vector Arcade 1980 Beams','Gaming and graphics history, space games','Still frame (clip coming soon)','Retro Digital'],
+ ['pointillist','Pointillist Sunday Afternoon','Pixels and colour science, how screens make colour','Still frame (clip coming soon)','Painterly'],
+ ['bauhaus','Bauhaus Geometric Poster','Design and UI history, geometry, product design','Still frame (clip coming soon)','Art & Design Movements'],
+ ['patent','Patent Drawing Engineering Sheet','Inventions and how they work, gadgets, engines','Still frame (clip coming soon)','Illustration'],
+ ['string','Nail and Thread String Art','Networks and connections, graph theory','Still frame (clip coming soon)','Generative & Type'],
+ ['paint','Bitmap Paint Doodle Window','Funny tech fails, internet memes, early computers','Still frame (clip coming soon)','Retro UI & Neon'],
+ ['graphite','Sketchbook Graphite Study','Design and anatomy of gadgets, robots, cars','Still frame (clip coming soon)','Hand-Drawn'],
+ ['swiss','Swiss Grid Typographic Poster','Clean data facts, product launches','Still frame (clip coming soon)','Art & Design Movements'],
+ ['flow','Flow Field Streamline Art','Airflow, weather, data flows, physics fields','Still frame (clip coming soon)','Data & Information'],
+ ['truchet','Multi-Scale Truchet Tiles','Patterns and algorithms, maths art, tiling','Still frame (clip coming soon)','Generative & Type'],
+ ['mac1bit','1-Bit 1984 Paint Screen','Computer history, pixels and dithering','Still frame (clip coming soon)','Retro Digital']
 ];
 var CH = 'Claude chooses from the topic';
 var HASCLIP = { watercolor: 1, puppet: 1, cosmic: 1, whiteboard: 1, neon: 1, papercraft: 1, noir: 1, manim: 1, collage: 1, deepsea: 1, comic: 1, isometric: 1, scope: 1, clay: 1, neonsign: 1, kawaii: 1 };   // add an id here when sb/<id>.mp4 + .jpg are uploaded
 var Q = [
  {id:'topic',k:'Topic',t:'Topic',type:'text',ph:'e.g. How UPI payments work, or Krishna lifts Govardhan',help:'Any subject: tech, science, history, nature or mythology. Leave it empty and Claude will suggest 3 topics that suit the style.'},
- {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts. Cosmic, Whiteboard, Neon and Papercraft are portrait previews drawn with each style’s own medium code. The ten newest styles show their original reference animation (16:9, framed inside the reel). Every style’s portrait kit gets built the first time you use it.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3]];}).concat([[CH,CH,'Best medium for the topic','']])},
+ {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts. Cosmic, Whiteboard, Neon and Papercraft are portrait previews drawn with each style’s own medium code. The next ten show their original reference animation (16:9, framed inside the reel), and the newest 58 show a still frame until their clips are made. Use the family chips to narrow the list. Every style’s portrait kit gets built the first time you use it.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3],s[4]];}).concat([[CH,CH,'Best medium for the topic','']])},
  {id:'len',k:'Length',t:'Length',type:'one',def:'About 60 seconds',o:[['About 45 seconds'],['About 60 seconds'],['About 70 seconds']]},
  {id:'kind',k:'Topic type',t:'Topic type',type:'one',def:'Claude works it out from the topic',help:'Sets how facts are sourced and which music fits.',o:[['Claude works it out from the topic'],['Technology or science explainer (current, sourced facts)'],['History or true story'],['Nature or health'],['Mythology: the version audiences know, with source tags'],['Mythology: strictly the original text (Valmiki / Vyasa)'],['Any topic with a mythology hook']]},
  {id:'voice',k:'Voice',t:'Hindi voice (Kokoro)',type:'one',def:'hm_omega (Hindi male, storyteller), speed 0.92',o:[['hm_omega (Hindi male, storyteller), speed 0.92'],['hm_psi (Hindi male, lighter)'],['hf_alpha (Hindi female, warm)'],['hf_beta (Hindi female, bright)']]},
@@ -279,6 +338,7 @@ var NAME = {}; SBS.forEach(function(s){ NAME[s[0]] = s[1]; });
 function init2(){ Q.forEach(function(s){ st2[s.id] = s.type==='many' ? s.def.slice() : (s.def || ''); }); }
 function el(tag, cls, txt){ var e = document.createElement(tag); if(cls) e.className = cls; if(txt != null) e.textContent = txt; return e; }
 var dlg2 = document.getElementById('dlg2'), big2 = document.getElementById('big2');
+function openStill(id){ document.getElementById('dlg2t').textContent = NAME[id]; big2.removeAttribute('src'); big2.load(); big2.poster = 'sb/' + id + '.jpg'; dlg2.showModal(); }
 function openClip(id){ document.getElementById('dlg2t').textContent = NAME[id]; big2.src = 'sb/' + id + '.mp4'; big2.poster = 'sb/' + id + '.jpg'; dlg2.showModal(); big2.play().catch(function(){}); }
 document.getElementById('dlg2x').addEventListener('click', function(){ dlg2.close(); });
 dlg2.addEventListener('click', function(e){ if(e.target === dlg2) dlg2.close(); });
@@ -301,12 +361,13 @@ function build2(){
         inp.type = s.type==='one' ? 'radio' : 'checkbox'; inp.name = 'sb_' + s.id; inp.value = o[0];
         var isDef = s.type==='one' ? o[0]===s.def : s.def.indexOf(o[0]) > -1; inp.checked = isDef;
         var isClip = s.id==='style' && NAME[o[0]] && HASCLIP[o[0]], isSoon = s.id==='style' && NAME[o[0]] && !HASCLIP[o[0]];
-        if(isSoon){ var ph = el('span', 'thumb9 soon', 'Preview clip coming soon'); ph.setAttribute('aria-hidden','true'); face.appendChild(ph); }
+        if(s.id==='style') lab.dataset.fam = o[4] || '';
+        if(isSoon){ var im = el('img', 'thumb9'); im.loading = 'lazy'; im.decoding = 'async'; im.src = 'sb/' + o[0] + '.jpg'; im.alt = o[1] + ' still frame'; face.appendChild(im); }
         if(isClip){ var v = el('video', 'thumb9'); v.muted = true; v.loop = true; v.setAttribute('playsinline',''); v.setAttribute('muted',''); v.preload = 'none'; v.poster = 'sb/' + o[0] + '.jpg'; v.src = 'sb/' + o[0] + '.mp4'; v.setAttribute('aria-label', o[1] + ' preview clip'); face.appendChild(v); }
         var label = s.id==='style' ? o[1] : o[0];
         face.appendChild(el('span', 't', label + (isDef ? ' ★' : '')));
         if(s.id==='style' && o[2]) face.appendChild(el('span', 'h', o[2]));
-        if(isSoon) face.appendChild(el('span', 'trig', 'box-' + o[0]));
+        if(isSoon){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb2 = el('button', 'play', 'Enlarge'); eb2.type = 'button'; eb2.setAttribute('aria-label', 'Show the ' + o[1] + ' still large'); eb2.addEventListener('click', function(e){ e.preventDefault(); openStill(o[0]); }); face.appendChild(eb2); }
         if(isClip){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb = el('button', 'play', 'Enlarge'); eb.type = 'button'; eb.setAttribute('aria-label', 'Play the ' + o[1] + ' preview large'); eb.addEventListener('click', function(e){ e.preventDefault(); openClip(o[0]); }); face.appendChild(eb); }
         inp.addEventListener('change', function(){
           if(s.type==='one') st2[s.id] = o[0]; else st2[s.id] = s.o.map(function(x, i){ return s.els[i].checked ? x[0] : null; }).filter(Boolean);
@@ -314,6 +375,15 @@ function build2(){
         });
         s.els.push(inp); lab.appendChild(inp); lab.appendChild(face); box.appendChild(lab);
       });
+      if(s.id==='style'){
+        var fams = ['All']; s.o.forEach(function(o){ if(o[4] && fams.indexOf(o[4]) < 0) fams.push(o[4]); });
+        var bar = el('div', 'fams'); bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Filter styles by family');
+        fams.forEach(function(f, i){ var b = el('button', 'play', f); b.type = 'button'; b.setAttribute('aria-pressed', i ? 'false' : 'true');
+          b.addEventListener('click', function(){ bar.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+            box.querySelectorAll('label.chip').forEach(function(l){ var inp = l.querySelector('input'); l.hidden = !(f === 'All' || l.dataset.fam === f || l.dataset.fam === '' || inp.checked); }); });
+          bar.appendChild(b); });
+        fs.appendChild(bar);
+      }
       fs.appendChild(box);
     }
     form2.appendChild(fs);
