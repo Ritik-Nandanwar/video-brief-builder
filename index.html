@@ -107,7 +107,7 @@ aside{position:static}
 <div class="wrap">
 <header>
 <h1>Skill Box brief</h1>
-<p>Mythology shorts in one of six animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
+<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of six animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
 </header>
 <form id="f2" onsubmit="return false"></form>
 <aside>
@@ -240,26 +240,26 @@ init(); build(); update();
 <script>
 (function(){
 var SBS = [
- ['watercolor','Watercolor Sketchbook Story Pages','Gentle, devotional, nature: Vrindavan, Savitri, Ganga','Rani Makkhi (real video)'],
- ['puppet','Shadow Puppet Theatre','Epic drama, battles, night stories','Ravan Vadh (real video)'],
- ['cosmic','Cosmic Cartoon Planet Tales','Cosmic stories: Samudra Manthan, Dhruva, Surya','Preview: Dhruva Tara'],
- ['whiteboard','Whiteboard Marker Story Lesson','Structures: vyuhas, family trees, yugas, routes','Preview: Chakravyuh'],
- ['neon','Neon Glow Tech Story','Systems: divyastras, lokas, chakras, yuga cycle','Preview: Divyastra'],
- ['papercraft','Papercraft Model Kit Mat','Things built: Ram Setu, rathas, Lanka, Govardhan','Preview: Ram Setu']
+ ['watercolor','Watercolor Sketchbook Story Pages','Nature, biology, health, gentle stories (Ganga, Vrindavan)','Rani Makkhi (real video)'],
+ ['puppet','Shadow Puppet Theatre','History, true stories, dramatic origin tales, epics','Ravan Vadh (real video)'],
+ ['cosmic','Cosmic Cartoon Planet Tales','Space, satellites, GPS, physics, cosmic myths','Preview: Dhruva Tara'],
+ ['whiteboard','Whiteboard Marker Story Lesson','Algorithms, system design, processes, timelines','Preview: Chakravyuh'],
+ ['neon','Neon Glow Tech Story','AI, apps, payments, networks, chips, data flows','Preview: Divyastra'],
+ ['papercraft','Papercraft Model Kit Mat','How things are built: phones, bridges, Ram Setu','Preview: Ram Setu']
 ];
 var CH = 'Claude chooses from the topic';
 var Q = [
- {id:'topic',k:'Topic',t:'Story or topic',type:'text',ph:'e.g. Krishna lifts Govardhan',help:'Leave it empty and Claude will suggest 3 stories that suit the style.'},
- {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts; the other four are previews drawn with that style’s own medium code, since their full kit gets built the first time you use them.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3]];}).concat([[CH,CH,'Best medium for the story','']])},
+ {id:'topic',k:'Topic',t:'Topic',type:'text',ph:'e.g. How UPI payments work, or Krishna lifts Govardhan',help:'Any subject: tech, science, history, nature or mythology. Leave it empty and Claude will suggest 3 topics that suit the style.'},
+ {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts; the other four are previews drawn with that style’s own medium code, since their full kit gets built the first time you use them.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3]];}).concat([[CH,CH,'Best medium for the topic','']])},
  {id:'len',k:'Length',t:'Length',type:'one',def:'About 60 seconds',o:[['About 45 seconds'],['About 60 seconds'],['About 70 seconds']]},
- {id:'ver',k:'Story version',t:'Which version of the story',type:'one',def:'The version audiences know (e.g. Ramcharitmanas), with source tags',o:[['The version audiences know (e.g. Ramcharitmanas), with source tags'],['Strictly the original text (Valmiki / Vyasa)'],['Nature or science topic with a mythology hook']]},
+ {id:'kind',k:'Topic type',t:'Topic type',type:'one',def:'Claude works it out from the topic',help:'Sets how facts are sourced and which music fits.',o:[['Claude works it out from the topic'],['Technology or science explainer (current, sourced facts)'],['History or true story'],['Nature or health'],['Mythology: the version audiences know, with source tags'],['Mythology: strictly the original text (Valmiki / Vyasa)'],['Any topic with a mythology hook']]},
  {id:'voice',k:'Voice',t:'Hindi voice (Kokoro)',type:'one',def:'hm_omega (Hindi male, storyteller), speed 0.92',o:[['hm_omega (Hindi male, storyteller), speed 0.92'],['hm_psi (Hindi male, lighter)'],['hf_alpha (Hindi female, warm)'],['hf_beta (Hindi female, bright)']]},
- {id:'cap',k:'Captions',t:'Captions',type:'one',def:'Hinglish karaoke (Roman Hindi, spoken word highlighted)',o:[['Hinglish karaoke (Roman Hindi, spoken word highlighted)'],['Hindi Devanagari karaoke']]},
- {id:'mood',k:'Music bed',t:'Tanpura bed mood',type:'one',def:'Claude picks from the story',o:[['Claude picks from the story'],['Epic'],['Grief'],['Night']]},
+ {id:'cap',k:'Captions',t:'Captions',type:'one',def:'Hinglish karaoke (Roman Hindi, spoken word highlighted)',help:'Tech terms stay in English inside the Hinglish line (UPI, server, AI model).',o:[['Hinglish karaoke (Roman Hindi, spoken word highlighted)'],['Hindi Devanagari karaoke']]},
+ {id:'mood',k:'Music bed',t:'Music bed',type:'one',def:'Claude picks from the topic',o:[['Claude picks from the topic'],['Tech (synth pad and pulse)'],['Calm (soft pad)'],['Tanpura: epic'],['Tanpura: grief'],['Tanpura: night']]},
  {id:'end',k:'Ending',t:'Ending',type:'one',def:'One-line takeaway (moral)',o:[['One-line takeaway (moral)'],['Loop back to the hook'],['Custom end line or handle']]},
  {id:'endtxt',k:'Custom end line or handle',t:'Your end line or handle',type:'text',ph:'e.g. Follow @thevitharstudio',show:function(s){return s.end==='Custom end line or handle'}},
  {id:'deliv',k:'Deliver',t:'What you want back',type:'many',def:['MP4 video (1080x1920)','Thumbnail (renders/thumbnail.jpg)','Title, description and hashtags'],o:[['MP4 video (1080x1920)'],['Thumbnail (renders/thumbnail.jpg)'],['Title, description and hashtags'],['One-file player (HTML)'],['Script with each line’s timing'],['research.md with sources']]},
- {id:'notes',k:'Extra notes',t:'Extra notes',type:'area',ph:'Must-include moments, names, things to avoid, a chaupai to quote…',help:'Optional.'},
+ {id:'notes',k:'Extra notes',t:'Extra notes',type:'area',ph:'Must-include facts or stats, names, things to avoid, a line to quote…',help:'Optional.'},
  {id:'flow',k:'Workflow',t:'Workflow',type:'one',def:'Just go: research, render, check the contact sheet, deliver',o:[['Just go: research, render, check the contact sheet, deliver'],['Show me the script and contact sheet first, then wait for my approval']]}
 ];
 var st2 = {}, form2 = document.getElementById('f2'), out2 = document.getElementById('out2'), sets2 = {};
@@ -308,7 +308,7 @@ function build2(){
 }
 function brief2(){
   var topic = st2.topic || '', sty = st2.style;
-  var first = sty===CH ? 'skill-box ' + (topic || '(suggest 3 stories)') + ' (pick the best style for it)' : 'box-' + sty + ' ' + (topic || '(suggest 3 stories that suit this style)');
+  var first = sty===CH ? 'skill-box ' + (topic || '(suggest 3 topics)') + ' (pick the best style for it)' : 'box-' + sty + ' ' + (topic || '(suggest 3 topics that suit this style)');
   var L = ['/skill-box ' + first.replace(/^skill-box /,''), '', 'Settings:'];
   Q.forEach(function(s){
     if(s.id==='topic') return;
