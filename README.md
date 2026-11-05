@@ -2,7 +2,9 @@
 
 A single-page tool for picking short-video settings (topic, style, voice, length, music and more), with live voice samples and style previews. Press **Copy brief** and paste the result into the chat.
 
-Everything is in `index.html`: no build step, no dependencies, no server. Voice samples and style previews are embedded in the page, so it works offline too.
+Two tabs: **Faceless Shorts** and **Skill Box** (Hindu mythology shorts in six animated styles, each with an 8-second looping preview clip).
+
+Everything is in `index.html` plus the Skill Box preview clips in `sb/`: no build step, no dependencies, no server. Faceless voice samples and style previews are embedded in the page.
 
 ## Host it on GitHub Pages
 
@@ -16,4 +18,4 @@ Everything is in `index.html`: no build step, no dependencies, no server. Voice 
 
 ## Updating
 
-Replace `index.html` in the repository and commit. The site refreshes within a minute or two.
+Replace `index.html` (and any changed clips in `sb/`) in the repository and commit. The site refreshes within a minute or two.

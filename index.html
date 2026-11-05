@@ -66,10 +66,28 @@ aside{position:static}
 .bar .copy{background:var(--acc);color:var(--acc-ink)}
 .bar .reset{color:var(--ink);border-color:var(--line)}
 }
+
+.tabs{max-width:1120px;margin:0 auto;padding:18px 20px 0;display:flex;gap:8px;flex-wrap:wrap}
+.tabs button{background:var(--card);color:var(--ink);border:1.5px solid var(--line);min-height:44px;padding:0 18px;border-radius:999px;font-weight:700}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button:hover{border-color:var(--acc)}
+.tabs button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.tabpanel[hidden]{display:none}
+.vis9 .chip{flex:1 1 150px;max-width:180px}
+.vis9 .chip .box{height:100%}
+.vis9 .chip .h{max-width:none}
+.thumb9{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:6px;margin-bottom:8px;background:#000}
+.trig{display:inline-block;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:2px 6px;border-radius:6px;background:var(--bg);color:var(--mute);margin-top:4px}
+.chip input:checked+.box .trig{background:rgba(255,255,255,.18);color:inherit}
+.note{clear:both;margin:8px 0 0;color:var(--mute);font-size:13px}
+#dlg2 video{display:block;width:min(100%,420px);aspect-ratio:9/16;margin:0 auto;border-radius:8px;background:#000}
+#dlg2{width:min(96vw,480px)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<nav class="tabs" role="tablist" aria-label="Brief type"><button type="button" role="tab" id="t-fs" aria-controls="p-fs" aria-selected="true">Faceless Shorts</button><button type="button" role="tab" id="t-sb" aria-controls="p-sb" aria-selected="false">Skill Box</button></nav>
+<section class="tabpanel" id="p-fs" role="tabpanel" aria-labelledby="t-fs">
 <div class="wrap">
 <header>
 <h1>Short video brief builder</h1>
@@ -84,6 +102,24 @@ aside{position:static}
 </div>
 </aside>
 </div>
+</section>
+<section class="tabpanel" id="p-sb" role="tabpanel" aria-labelledby="t-sb" hidden>
+<div class="wrap">
+<header>
+<h1>Skill Box brief</h1>
+<p>Mythology shorts in one of six animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
+</header>
+<form id="f2" onsubmit="return false"></form>
+<aside>
+<div class="slate">
+<h2>Your brief</h2>
+<pre id="out2" aria-live="polite"></pre>
+<div class="btns"><button type="button" class="reset" data-act="reset">Reset</button><button type="button" class="copy" data-act="copy">Copy brief</button></div>
+</div>
+</aside>
+</div>
+</section>
+<dialog id="dlg2" aria-labelledby="dlg2t"><div class="top"><h3 id="dlg2t"></h3><button type="button" id="dlg2x" class="play" style="margin:0">Close</button></div><video id="big2" muted loop playsinline controls></video></dialog>
 <dialog id="dlg" aria-labelledby="dlgt"><div class="top"><h3 id="dlgt"></h3><button type="button" id="dlgx" class="play" style="margin:0">Close</button></div><img id="big" alt=""></dialog>
 <div class="bar"><button type="button" class="reset" data-act="reset">Reset</button><button type="button" class="copy" data-act="copy">Copy brief</button></div>
 <script>
@@ -199,6 +235,107 @@ document.addEventListener('click', function(e){
   if(b.dataset.act === 'copy') copy(); else reset();
 });
 init(); build(); update();
+</script>
+
+<script>
+(function(){
+var SBS = [
+ ['watercolor','Watercolor Sketchbook Story Pages','Gentle, devotional, nature: Vrindavan, Savitri, Ganga','Rani Makkhi (real video)'],
+ ['puppet','Shadow Puppet Theatre','Epic drama, battles, night stories','Ravan Vadh (real video)'],
+ ['cosmic','Cosmic Cartoon Planet Tales','Cosmic stories: Samudra Manthan, Dhruva, Surya','Preview: Dhruva Tara'],
+ ['whiteboard','Whiteboard Marker Story Lesson','Structures: vyuhas, family trees, yugas, routes','Preview: Chakravyuh'],
+ ['neon','Neon Glow Tech Story','Systems: divyastras, lokas, chakras, yuga cycle','Preview: Divyastra'],
+ ['papercraft','Papercraft Model Kit Mat','Things built: Ram Setu, rathas, Lanka, Govardhan','Preview: Ram Setu']
+];
+var CH = 'Claude chooses from the topic';
+var Q = [
+ {id:'topic',k:'Topic',t:'Story or topic',type:'text',ph:'e.g. Krishna lifts Govardhan',help:'Leave it empty and Claude will suggest 3 stories that suit the style.'},
+ {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts; the other four are previews drawn with that style’s own medium code, since their full kit gets built the first time you use them.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3]];}).concat([[CH,CH,'Best medium for the story','']])},
+ {id:'len',k:'Length',t:'Length',type:'one',def:'About 60 seconds',o:[['About 45 seconds'],['About 60 seconds'],['About 70 seconds']]},
+ {id:'ver',k:'Story version',t:'Which version of the story',type:'one',def:'The version audiences know (e.g. Ramcharitmanas), with source tags',o:[['The version audiences know (e.g. Ramcharitmanas), with source tags'],['Strictly the original text (Valmiki / Vyasa)'],['Nature or science topic with a mythology hook']]},
+ {id:'voice',k:'Voice',t:'Hindi voice (Kokoro)',type:'one',def:'hm_omega (Hindi male, storyteller), speed 0.92',o:[['hm_omega (Hindi male, storyteller), speed 0.92'],['hm_psi (Hindi male, lighter)'],['hf_alpha (Hindi female, warm)'],['hf_beta (Hindi female, bright)']]},
+ {id:'cap',k:'Captions',t:'Captions',type:'one',def:'Hinglish karaoke (Roman Hindi, spoken word highlighted)',o:[['Hinglish karaoke (Roman Hindi, spoken word highlighted)'],['Hindi Devanagari karaoke']]},
+ {id:'mood',k:'Music bed',t:'Tanpura bed mood',type:'one',def:'Claude picks from the story',o:[['Claude picks from the story'],['Epic'],['Grief'],['Night']]},
+ {id:'end',k:'Ending',t:'Ending',type:'one',def:'One-line takeaway (moral)',o:[['One-line takeaway (moral)'],['Loop back to the hook'],['Custom end line or handle']]},
+ {id:'endtxt',k:'Custom end line or handle',t:'Your end line or handle',type:'text',ph:'e.g. Follow @thevitharstudio',show:function(s){return s.end==='Custom end line or handle'}},
+ {id:'deliv',k:'Deliver',t:'What you want back',type:'many',def:['MP4 video (1080x1920)','Thumbnail (renders/thumbnail.jpg)','Title, description and hashtags'],o:[['MP4 video (1080x1920)'],['Thumbnail (renders/thumbnail.jpg)'],['Title, description and hashtags'],['One-file player (HTML)'],['Script with each line’s timing'],['research.md with sources']]},
+ {id:'notes',k:'Extra notes',t:'Extra notes',type:'area',ph:'Must-include moments, names, things to avoid, a chaupai to quote…',help:'Optional.'},
+ {id:'flow',k:'Workflow',t:'Workflow',type:'one',def:'Just go: research, render, check the contact sheet, deliver',o:[['Just go: research, render, check the contact sheet, deliver'],['Show me the script and contact sheet first, then wait for my approval']]}
+];
+var st2 = {}, form2 = document.getElementById('f2'), out2 = document.getElementById('out2'), sets2 = {};
+var NAME = {}; SBS.forEach(function(s){ NAME[s[0]] = s[1]; });
+function init2(){ Q.forEach(function(s){ st2[s.id] = s.type==='many' ? s.def.slice() : (s.def || ''); }); }
+function el(tag, cls, txt){ var e = document.createElement(tag); if(cls) e.className = cls; if(txt != null) e.textContent = txt; return e; }
+var dlg2 = document.getElementById('dlg2'), big2 = document.getElementById('big2');
+function openClip(id){ document.getElementById('dlg2t').textContent = NAME[id]; big2.src = 'sb/' + id + '.mp4'; big2.poster = 'sb/' + id + '.jpg'; dlg2.showModal(); big2.play().catch(function(){}); }
+document.getElementById('dlg2x').addEventListener('click', function(){ dlg2.close(); });
+dlg2.addEventListener('click', function(e){ if(e.target === dlg2) dlg2.close(); });
+dlg2.addEventListener('close', function(){ big2.pause(); });
+function build2(){
+  Q.forEach(function(s){
+    var fs = el('fieldset'); sets2[s.id] = fs;
+    if(s.id==='style') fs.className = 'vis9';
+    fs.appendChild(el('legend', '', s.t));
+    if(s.help) fs.appendChild(el('p', 'help', s.help));
+    if(s.type==='text' || s.type==='area'){
+      var inp = el(s.type==='text' ? 'input' : 'textarea'); if(s.type==='text') inp.type = 'text';
+      inp.placeholder = s.ph || ''; inp.setAttribute('aria-label', s.t);
+      inp.addEventListener('input', function(){ st2[s.id] = inp.value.trim(); upd2(); });
+      s.el = inp; fs.appendChild(inp);
+    } else {
+      var box = el('div', 'opts'); s.els = [];
+      s.o.forEach(function(o){
+        var lab = el('label', 'chip'), inp = el('input'), face = el('span', 'box');
+        inp.type = s.type==='one' ? 'radio' : 'checkbox'; inp.name = 'sb_' + s.id; inp.value = o[0];
+        var isDef = s.type==='one' ? o[0]===s.def : s.def.indexOf(o[0]) > -1; inp.checked = isDef;
+        var isClip = s.id==='style' && NAME[o[0]];
+        if(isClip){ var v = el('video', 'thumb9'); v.muted = true; v.loop = true; v.autoplay = true; v.setAttribute('playsinline',''); v.setAttribute('muted',''); v.preload = 'metadata'; v.poster = 'sb/' + o[0] + '.jpg'; v.src = 'sb/' + o[0] + '.mp4'; v.setAttribute('aria-label', o[1] + ' preview clip'); face.appendChild(v); }
+        var label = s.id==='style' ? o[1] : o[0];
+        face.appendChild(el('span', 't', label + (isDef ? ' ★' : '')));
+        if(s.id==='style' && o[2]) face.appendChild(el('span', 'h', o[2]));
+        if(isClip){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb = el('button', 'play', 'Enlarge'); eb.type = 'button'; eb.setAttribute('aria-label', 'Play the ' + o[1] + ' preview large'); eb.addEventListener('click', function(e){ e.preventDefault(); openClip(o[0]); }); face.appendChild(eb); }
+        inp.addEventListener('change', function(){
+          if(s.type==='one') st2[s.id] = o[0]; else st2[s.id] = s.o.map(function(x, i){ return s.els[i].checked ? x[0] : null; }).filter(Boolean);
+          upd2();
+        });
+        s.els.push(inp); lab.appendChild(inp); lab.appendChild(face); box.appendChild(lab);
+      });
+      fs.appendChild(box);
+    }
+    form2.appendChild(fs);
+  });
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) form2.querySelectorAll('video').forEach(function(v){ v.autoplay = false; v.pause(); });
+}
+function brief2(){
+  var topic = st2.topic || '', sty = st2.style;
+  var first = sty===CH ? 'skill-box ' + (topic || '(suggest 3 stories)') + ' (pick the best style for it)' : 'box-' + sty + ' ' + (topic || '(suggest 3 stories that suit this style)');
+  var L = ['/skill-box ' + first.replace(/^skill-box /,''), '', 'Settings:'];
+  Q.forEach(function(s){
+    if(s.id==='topic') return;
+    if(s.show && !s.show(st2)) return;
+    var v = st2[s.id]; if(Array.isArray(v)) v = v.join(', ');
+    if(s.id==='style') v = sty===CH ? CH : NAME[sty] + ' (box-' + sty + ')';
+    if(v) L.push(s.k + ': ' + v);
+  });
+  L.push('Format: vertical 9:16, Hindi voice');
+  return L.join('\n');
+}
+function upd2(){ Q.forEach(function(s){ if(s.show) sets2[s.id].hidden = !s.show(st2); }); out2.textContent = brief2(); }
+function reset2(){ init2(); Q.forEach(function(s){ if(s.el) s.el.value = ''; if(s.els) s.els.forEach(function(inp, i){ var v = s.o[i][0]; inp.checked = s.type==='one' ? v===s.def : s.def.indexOf(v) > -1; }); }); upd2(); }
+init2(); build2(); upd2();
+// tabs: the Copy / Reset buttons (and the phone bar) act on the open tab
+var cur = 'fs', fsBrief = brief, fsReset = reset;
+brief = function(){ return cur==='sb' ? brief2() : fsBrief(); };
+reset = function(){ if(cur==='sb') reset2(); else fsReset(); };
+var tabs = { fs: document.getElementById('t-fs'), sb: document.getElementById('t-sb') }, panes = { fs: document.getElementById('p-fs'), sb: document.getElementById('p-sb') };
+function show(k){ cur = k; ['fs','sb'].forEach(function(x){ var on = x===k; tabs[x].setAttribute('aria-selected', on ? 'true' : 'false'); tabs[x].tabIndex = on ? 0 : -1; panes[x].hidden = !on; });
+  form2.querySelectorAll('video').forEach(function(v){ if(k==='sb'){ var p = v.play(); if(p) p.catch(function(){}); } else v.pause(); });
+  try { localStorage.setItem('briefTab', k); } catch(e) {} }
+tabs.fs.addEventListener('click', function(){ show('fs'); }); tabs.sb.addEventListener('click', function(){ show('sb'); });
+document.querySelector('.tabs').addEventListener('keydown', function(e){ if(e.key==='ArrowRight' || e.key==='ArrowLeft'){ var k = cur==='fs' ? 'sb' : 'fs'; show(k); tabs[k].focus(); e.preventDefault(); } });
+var saved = 'fs'; try { saved = localStorage.getItem('briefTab') || 'fs'; } catch(e) {}
+show(saved==='sb' ? 'sb' : 'fs');
+})();
 </script>
 </body>
 </html>
