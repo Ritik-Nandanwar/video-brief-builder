@@ -80,6 +80,7 @@ aside{position:static}
 .trig{display:inline-block;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:2px 6px;border-radius:6px;background:var(--bg);color:var(--mute);margin-top:4px}
 .chip input:checked+.box .trig{background:rgba(255,255,255,.18);color:inherit}
 .note{clear:both;margin:8px 0 0;color:var(--mute);font-size:13px}
+.thumb9.soon{display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font-size:13px;font-weight:600;color:var(--mute);background:var(--bg);border:1.5px dashed var(--line)}
 #dlg2 video{display:block;width:min(100%,420px);aspect-ratio:9/16;margin:0 auto;border-radius:8px;background:#000}
 #dlg2{width:min(96vw,480px)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -107,7 +108,7 @@ aside{position:static}
 <div class="wrap">
 <header>
 <h1>Skill Box brief</h1>
-<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of six animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
+<p>Shorts and reels on any topic (technology, science, history, nature or mythology) in one of sixteen animated mediums: Hindi voice, Hinglish karaoke captions, 9:16. Pick a style (each card plays an 8-second preview), then copy the brief and paste it into the chat. Anything you leave alone uses the default, marked with ★.</p>
 </header>
 <form id="f2" onsubmit="return false"></form>
 <aside>
@@ -245,12 +246,23 @@ var SBS = [
  ['cosmic','Cosmic Cartoon Planet Tales','Space, satellites, GPS, physics, cosmic myths','Preview: Dhruva Tara'],
  ['whiteboard','Whiteboard Marker Story Lesson','Algorithms, system design, processes, timelines','Preview: Chakravyuh'],
  ['neon','Neon Glow Tech Story','AI, apps, payments, networks, chips, data flows','Preview: Divyastra'],
- ['papercraft','Papercraft Model Kit Mat','How things are built: phones, bridges, Ram Setu','Preview: Ram Setu']
+ ['papercraft','Papercraft Model Kit Mat','How things are built: phones, bridges, Ram Setu','Preview: Ram Setu'],
+ ['noir','Film Noir Newsreel Case','Data breaches, scams, hacker hunts, whodunits','Reference preview (16:9 inside the reel)'],
+ ['manim','Manim Math Proof Lesson','Algorithms, maths, probability, how models learn','Reference preview (16:9 inside the reel)'],
+ ['collage','Editorial Collage Essay Pages','Company and invention histories, essays on tech','Reference preview (16:9 inside the reel)'],
+ ['deepsea','Bioluminescent Deep Sea Tales','Networks, signals, fibre optics, ocean science','Reference preview (16:9 inside the reel)'],
+ ['comic','Halftone Pop Comic Panels','Gadget launches, cyber-attacks, startup stories','Reference preview (16:9 inside the reel)'],
+ ['isometric','Isometric Pastel Mini World','Data centres, factories, the cloud, logistics','Reference preview (16:9 inside the reel)'],
+ ['scope','Oscilloscope Beam Vector Story','Signals, radio, Wi-Fi and 5G waves, electronics','Reference preview (16:9 inside the reel)'],
+ ['clay','Claymation Stop-Motion Set','How gadgets are made, kids science, recycling','Reference preview (16:9 inside the reel)'],
+ ['neonsign','Neon Sign Night Street','City tech, payments, top-5 lists, app features','Reference preview (16:9 inside the reel)'],
+ ['kawaii','Kawaii Anime Chibi Story','Cute app and AI explainers, internet safety','Reference preview (16:9 inside the reel)']
 ];
 var CH = 'Claude chooses from the topic';
+var HASCLIP = { watercolor: 1, puppet: 1, cosmic: 1, whiteboard: 1, neon: 1, papercraft: 1 };   // add an id here when sb/<id>.mp4 + .jpg are uploaded
 var Q = [
  {id:'topic',k:'Topic',t:'Topic',type:'text',ph:'e.g. How UPI payments work, or Krishna lifts Govardhan',help:'Any subject: tech, science, history, nature or mythology. Leave it empty and Claude will suggest 3 topics that suit the style.'},
- {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts; the other four are previews drawn with that style’s own medium code, since their full kit gets built the first time you use them.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3]];}).concat([[CH,CH,'Best medium for the topic','']])},
+ {id:'style',k:'Style',t:'Animation style',type:'one',def:'watercolor',help:'Each card loops an 8-second preview. “Enlarge” plays it big. Watercolor and Shadow Puppet clips are cut from finished shorts. Cosmic, Whiteboard, Neon and Papercraft are portrait previews drawn with each style’s own medium code. The ten newest styles get their preview clips soon. Every style’s portrait kit gets built the first time you use it.',o:SBS.map(function(s){return [s[0],s[1],s[2],s[3]];}).concat([[CH,CH,'Best medium for the topic','']])},
  {id:'len',k:'Length',t:'Length',type:'one',def:'About 60 seconds',o:[['About 45 seconds'],['About 60 seconds'],['About 70 seconds']]},
  {id:'kind',k:'Topic type',t:'Topic type',type:'one',def:'Claude works it out from the topic',help:'Sets how facts are sourced and which music fits.',o:[['Claude works it out from the topic'],['Technology or science explainer (current, sourced facts)'],['History or true story'],['Nature or health'],['Mythology: the version audiences know, with source tags'],['Mythology: strictly the original text (Valmiki / Vyasa)'],['Any topic with a mythology hook']]},
  {id:'voice',k:'Voice',t:'Hindi voice (Kokoro)',type:'one',def:'hm_omega (Hindi male, storyteller), speed 0.92',o:[['hm_omega (Hindi male, storyteller), speed 0.92'],['hm_psi (Hindi male, lighter)'],['hf_alpha (Hindi female, warm)'],['hf_beta (Hindi female, bright)']]},
@@ -288,11 +300,13 @@ function build2(){
         var lab = el('label', 'chip'), inp = el('input'), face = el('span', 'box');
         inp.type = s.type==='one' ? 'radio' : 'checkbox'; inp.name = 'sb_' + s.id; inp.value = o[0];
         var isDef = s.type==='one' ? o[0]===s.def : s.def.indexOf(o[0]) > -1; inp.checked = isDef;
-        var isClip = s.id==='style' && NAME[o[0]];
-        if(isClip){ var v = el('video', 'thumb9'); v.muted = true; v.loop = true; v.autoplay = true; v.setAttribute('playsinline',''); v.setAttribute('muted',''); v.preload = 'metadata'; v.poster = 'sb/' + o[0] + '.jpg'; v.src = 'sb/' + o[0] + '.mp4'; v.setAttribute('aria-label', o[1] + ' preview clip'); face.appendChild(v); }
+        var isClip = s.id==='style' && NAME[o[0]] && HASCLIP[o[0]], isSoon = s.id==='style' && NAME[o[0]] && !HASCLIP[o[0]];
+        if(isSoon){ var ph = el('span', 'thumb9 soon', 'Preview clip coming soon'); ph.setAttribute('aria-hidden','true'); face.appendChild(ph); }
+        if(isClip){ var v = el('video', 'thumb9'); v.muted = true; v.loop = true; v.setAttribute('playsinline',''); v.setAttribute('muted',''); v.preload = 'none'; v.poster = 'sb/' + o[0] + '.jpg'; v.src = 'sb/' + o[0] + '.mp4'; v.setAttribute('aria-label', o[1] + ' preview clip'); face.appendChild(v); }
         var label = s.id==='style' ? o[1] : o[0];
         face.appendChild(el('span', 't', label + (isDef ? ' ★' : '')));
         if(s.id==='style' && o[2]) face.appendChild(el('span', 'h', o[2]));
+        if(isSoon) face.appendChild(el('span', 'trig', 'box-' + o[0]));
         if(isClip){ face.appendChild(el('span', 'trig', 'box-' + o[0])); if(o[3]) face.appendChild(el('span', 'h', o[3])); var eb = el('button', 'play', 'Enlarge'); eb.type = 'button'; eb.setAttribute('aria-label', 'Play the ' + o[1] + ' preview large'); eb.addEventListener('click', function(e){ e.preventDefault(); openClip(o[0]); }); face.appendChild(eb); }
         inp.addEventListener('change', function(){
           if(s.type==='one') st2[s.id] = o[0]; else st2[s.id] = s.o.map(function(x, i){ return s.els[i].checked ? x[0] : null; }).filter(Boolean);
@@ -304,7 +318,13 @@ function build2(){
     }
     form2.appendChild(fs);
   });
-  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) form2.querySelectorAll('video').forEach(function(v){ v.autoplay = false; v.pause(); });
+  // clips play only while their card is on screen (16 videos would be heavy on a phone); reduced motion = posters only
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!still && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ var v = e.target; if(e.isIntersecting && cur==='sb'){ var p = v.play(); if(p) p.catch(function(){}); } else v.pause(); }); }, { threshold: 0.35 });
+    form2.querySelectorAll('video').forEach(function(v){ io.observe(v); });
+    window._sbIO = io;
+  }
 }
 function brief2(){
   var topic = st2.topic || '', sty = st2.style;
@@ -329,7 +349,7 @@ brief = function(){ return cur==='sb' ? brief2() : fsBrief(); };
 reset = function(){ if(cur==='sb') reset2(); else fsReset(); };
 var tabs = { fs: document.getElementById('t-fs'), sb: document.getElementById('t-sb') }, panes = { fs: document.getElementById('p-fs'), sb: document.getElementById('p-sb') };
 function show(k){ cur = k; ['fs','sb'].forEach(function(x){ var on = x===k; tabs[x].setAttribute('aria-selected', on ? 'true' : 'false'); tabs[x].tabIndex = on ? 0 : -1; panes[x].hidden = !on; });
-  form2.querySelectorAll('video').forEach(function(v){ if(k==='sb'){ var p = v.play(); if(p) p.catch(function(){}); } else v.pause(); });
+  form2.querySelectorAll('video').forEach(function(v){ v.pause(); if(k==='sb' && window._sbIO){ window._sbIO.unobserve(v); window._sbIO.observe(v); } });
   try { localStorage.setItem('briefTab', k); } catch(e) {} }
 tabs.fs.addEventListener('click', function(){ show('fs'); }); tabs.sb.addEventListener('click', function(){ show('sb'); });
 document.querySelector('.tabs').addEventListener('keydown', function(e){ if(e.key==='ArrowRight' || e.key==='ArrowLeft'){ var k = cur==='fs' ? 'sb' : 'fs'; show(k); tabs[k].focus(); e.preventDefault(); } });
